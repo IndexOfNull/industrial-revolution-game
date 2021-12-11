@@ -1,0 +1,9 @@
+body {
+    /*overflow-y: hidden;*/
+    background-color: #000;
+    transition: all 1s ease-in-out;
+}
+
+.courier {
+    font-family: 'Courier New', Courier, monospace;
+}
