@@ -38,25 +38,6 @@ export const AutoProceed = ({
     }
   }, [currentIndex, done]);
 
-  /* useEffect(() => {
-    console.log('Effecting');
-    if (childrenArray.length == 0) {
-      setTimeout(onFinish, duration);
-    } else {
-      let counter = 0;
-      const interval = setInterval(() => {
-        setCurrentIndex(counter);
-        counter++;
-        if (counter == childrenArray.length) {
-          clearInterval(interval);
-          onFinish();
-        }
-      }, duration);
-
-      return () => clearInterval(interval);
-    }
-  }, []); */
-
   return (
     <div>
       {childrenArray.map((child, index) => {
