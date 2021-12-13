@@ -5,11 +5,12 @@ import { Option } from './Option';
 import { InfoText } from './InfoText';
 import { AutoProceed } from './AutoProceed';
 import { Switcher } from './Switcher';
+import { EndOfDay } from './EndOfDay';
 
 export const Story = () => {
   let [additionals, setAdditionals] = useState([]);
-  let [storyIndex, setStoryIndex] = useState(0);
-  const [money, setMoney] = useState(0);
+  let [storyIndex, setStoryIndex] = useState(12);
+  const [money, setMoney] = useState(10);
 
   const [wearingPin, setWearingPin] = useState(false);
   const [parentsMovedIn, setParentsMovedIn] = useState(false);
@@ -17,6 +18,7 @@ export const Story = () => {
   const [musicSource, setMusicSource] = useState('');
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.5);
+  const [audioObject, setAudioObject] = useState(new Audio());
 
   function incrementStory() {
     setStoryIndex(storyIndex + 1);
@@ -30,9 +32,6 @@ export const Story = () => {
           onFinish={() => {
             incrementStory();
           }}
-          onChange={() => {
-            console.log('changed!');
-          }}
         >
           <InfoText text="The year is 1911." hideButton={true} />
           <InfoText text="It is the Industrial Revolution. " hideButton={true} />
@@ -45,6 +44,9 @@ export const Story = () => {
           next={() => {
             document.body.style.backgroundColor = '#333';
             incrementStory();
+
+            audioObject.src = 'music/test.mp3';
+            audioObject.play();
           }}
         />
 
@@ -91,20 +93,102 @@ export const Story = () => {
             text="You sit down at your station. There is a child to your left, and a young girl to your right. She looks to be no older than nineteen."
             option1="Say hello"
             option2="Do nothing"
+            onOption1={() => {
+              setStoryIndex(5);
+            }}
+            onOption2={() => {
+              setStoryIndex(6);
+            }}
           />
         </AutoProceed>
 
-        <AutoProceed duration={3000}>
+        <AutoProceed
+          duration={3000}
+          onFinish={() => {
+            incrementStory();
+          }}
+        >
           <InfoText text="You say hi." hideButton={true} />
           <InfoText text="She doesn't understand English." hideButton={true} />
         </AutoProceed>
 
+        <InfoText
+          text="You have a long day ahead of you."
+          continueText="Get to work"
+          next={() => {
+            incrementStory();
+          }}
+        />
+
+        {/* Fade to black */}
         <AutoProceed
-          duration={100}
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
           onFinish={() => {
             incrementStory();
           }}
         ></AutoProceed>
+
+        <AutoProceed
+          duration={3000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={() => {
+            incrementStory();
+          }}
+        >
+          <InfoText text="The work day is over." hideButton={true} />
+        </AutoProceed>
+
+        <InfoText
+          text="You worked for 16 hours and made $1.50"
+          continueText="Walk home"
+          next={() => {
+            setMoney(money + 1.5);
+            incrementStory();
+          }}
+        />
+
+        {/* Fade to black */}
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={() => {
+            incrementStory();
+          }}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={5000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={() => {
+            incrementStory();
+          }}
+        >
+          <InfoText text="Home sweet home." hideButton={true} />
+          <InfoText text="It's a tenement house." hideButton={true}>
+            <img src="img/tenement.jpg"></img>
+          </InfoText>
+          <InfoText text="It's really quite dirty and odorous..." hideButton={true} />
+          <InfoText text="Your evening duties are calling you." hideButton={true} />
+        </AutoProceed>
+
+        <EndOfDay
+          onContinue={(newAmount, optionsSelected) => {
+            console.log(newAmount);
+            setMoney(newAmount);
+            incrementStory();
+          }}
+          options={{ Food: 1.5, Heat: 1.5, Rent: 3, Medicine: 3 }}
+          moneyToSpend={money}
+        />
 
         {/*         <InfoText text="This is your boss..." hideButton={true}>
           <img src="img/aspeno.gif"></img>

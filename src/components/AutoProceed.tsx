@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useTheme } from 'styled-components';
 
 type AutoProceedProps = {
   duration?: number;
   children?: ReactNode;
+  onStart?: Function;
   onFinish?: Function;
   onChange?: Function;
 };
@@ -11,12 +11,17 @@ type AutoProceedProps = {
 export const AutoProceed = ({
   duration = 1000,
   children,
+  onStart = () => {},
   onFinish = () => {},
   onChange = () => {},
 }: AutoProceedProps) => {
   const childrenArray = React.Children.toArray(children);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    return onStart();
+  }, []);
 
   useEffect(() => {
     if (!done) {

@@ -6,7 +6,7 @@ import { Counter } from './components/Counter';
 import { Story } from './components/Story';
 
 //Preload images
-const images = ['factory.jpg', 'aspeno.jpg', 'tenement.jpg', 'aspeno.gif'];
+const images = ['factory.jpg', 'aspeno.jpg', 'tenement.jpg', 'aspeno.gif', 'tenement.jpg'];
 images.forEach((img) => {
   const imgObject = new Image();
   imgObject.src = 'img/' + img;
