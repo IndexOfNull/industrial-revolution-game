@@ -9,11 +9,14 @@ import { EndOfDay } from './EndOfDay';
 
 export const Story = () => {
   let [additionals, setAdditionals] = useState([]);
-  let [storyIndex, setStoryIndex] = useState(13);
+  let [storyIndex, setStoryIndex] = useState(18);
   const [money, setMoney] = useState(10);
 
   const [wearingPin, setWearingPin] = useState(false);
   const [parentsMovedIn, setParentsMovedIn] = useState(false);
+  const [childWorking, setChildWorking] = useState(false);
+
+  const childWorkingBonus = 0.5; //Extra money per day if child is working
 
   const [musicSource, setMusicSource] = useState('');
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -63,7 +66,7 @@ export const Story = () => {
       finalText += 'Your landlord is planning on evicting you. ';
     }
 
-    if (daysWithoutHeat > 1) {
+    if (daysWithoutHeat >= 1) {
       finalText += "It's cold. ";
     }
 
@@ -266,6 +269,10 @@ export const Story = () => {
           <InfoText text="It's a tenement house." hideButton={true}>
             <img src="img/tenement.jpg"></img>
           </InfoText>
+          <InfoText
+            text="Your family shares a single room with two other families."
+            hideButton={true}
+          />
           <InfoText text="It's really quite dirty and odorous..." hideButton={true} />
           <InfoText text="Your evening duties are calling you." hideButton={true} />
         </AutoProceed>
@@ -281,7 +288,7 @@ export const Story = () => {
         />
 
         <AutoProceed
-          duration={6000}
+          duration={4000}
           onStart={() => {
             document.body.style.backgroundColor = '#000';
           }}
@@ -294,7 +301,7 @@ export const Story = () => {
             document.body.style.backgroundColor = '#333';
           }}
         >
-          <InfoText text="The Next Day -- 12PM" hideButton={true} />
+          <InfoText text="The Next Day -- 3PM" hideButton={true} />
           <InfoText text="It's your single day off" hideButton={true} />
           <InfoText text="You've received a letter from your parents." hideButton={true} />
           <InfoText
@@ -335,6 +342,108 @@ export const Story = () => {
             hideButton={true}
           />
           <InfoText text="It's getting late." hideButton={true} />
+          <InfoText text="Your evening duties are calling you." hideButton={true} />
+        </AutoProceed>
+
+        <EndOfDay
+          onContinue={(newAmount, optionsSelected) => {
+            endOfDayHandler(newAmount, optionsSelected);
+          }}
+          options={endOfDayOptions}
+          text={endOfDayTitleText}
+          continueText="Next"
+          moneyToSpend={money}
+        />
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={3000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+        >
+          <InfoText text="A Few Days Later at The Factory -- Noon" hideButton={true} />
+          <InfoText text="Your boss stops by to have a word with you." hideButton={true} />
+          <InfoText text="" hideButton={true}>
+            <div css={tw`text-3xl text-red-500 italic font-mono`}>
+              "We could always use more hands around here... What don't you bring your young one
+              in?"
+            </div>
+          </InfoText>
+          <Option
+            text="Will you bring your child to work? It could be dangerous for him..."
+            option1="Yes"
+            option2="No"
+            onOption1={() => {
+              setChildWorking(true);
+              incrementStory();
+            }}
+            onOption2={() => {
+              setStoryIndex(storyIndex + 2);
+            }}
+          />
+        </AutoProceed>
+
+        <AutoProceed
+          duration={3000}
+          onFinish={() => {
+            setStoryIndex(storyIndex + 2);
+          }}
+        >
+          <InfoText text={'"Yes, I\'ll bring him in"'} hideButton={true} />
+          <InfoText text="Your boss gives you a slight nod of approval." hideButton={true} />
+        </AutoProceed>
+
+        <AutoProceed
+          duration={3000}
+          onFinish={() => {
+            incrementStory();
+          }}
+        >
+          <InfoText italic={true} text={'"No, he needs to stay at home"'} hideButton={true} />
+          <InfoText text={'Your boss gives you a dissatisfied look.'} hideButton={true} />
+        </AutoProceed>
+
+        <InfoText
+          text="You work for the rest of the day and make $1.50"
+          continueText="Walk home"
+          next={() => {
+            setMoney(money + 1.5);
+            incrementStory();
+          }}
+        />
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={incrementStory}
+        >
+          <InfoText text="Home sweet home." hideButton={true} />
+          {childWorking ? (
+            <InfoText
+              text={'You have a difficult time telling your child that he has to work now.'}
+              hideButton={true}
+            />
+          ) : (
+            <InfoText text={"It's been a long day"} hideButton={true} />
+          )}
           <InfoText text="Your evening duties are calling you." hideButton={true} />
         </AutoProceed>
 
