@@ -30,15 +30,15 @@ export const EndOfDay = ({
   return (
     <div css={[tw`bg-black rounded-md p-5 px-10 flex flex-col mb-5`]}>
       <div css={tw`text-3xl font-mono`}>{text}</div>
-      <div css={tw`text-3xl font-mono`}>You have ${moneyLeft}</div>
+      <div css={tw`text-3xl font-mono mb-2`}>You have ${moneyLeft}</div>
       {Object.keys(options).map((option) => {
         const optionCost = options[option];
         return (
-          <div key={option}>
+          <div key={option} css={tw`mb-1`}>
             <input
+              css={tw`appearance-none cursor-pointer w-7 h-7 border-white border-2 checked:border-red-500 checked:bg-red-500 align-middle rounded-sm mr-2`}
               type="checkbox"
               onChange={(e) => {
-                console.log(e.target.checked);
                 if (e.target.checked) {
                   if (moneyToSpend - optionCost < 0) {
                     e.preventDefault();

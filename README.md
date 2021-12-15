@@ -1,5 +1,7 @@
 # Industrial Revolution Game
 
+_Your evening duties are calling you._
+
 This game was made for a US History final. The premise is that you're a worker in the United States during the Industrial Revolution. It is inspired by older text-adventure games and borrows some ideas from Papers, Please. It was built with the following technologies:
 
 - React (with react-dom)
