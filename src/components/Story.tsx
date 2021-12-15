@@ -62,8 +62,12 @@ export const Story = () => {
       finalText += childIsSick ? 'Your child is sick. Medicine is available for purchase. ' : '';
     }
 
+    if (daysWithoutFood >= 1) {
+      finalText += 'Your family is hungry. ';
+    }
+
     if (daysWithoutRent >= 3) {
-      finalText += 'Your landlord is planning on evicting you. ';
+      finalText += 'Your landlord is about to evict you. ';
     }
 
     if (daysWithoutHeat >= 1) {
@@ -212,7 +216,7 @@ export const Story = () => {
 
         <AutoProceed duration={3000} onFinish={incrementStory}>
           <InfoText text="You say hi." hideButton={true} />
-          <InfoText text="She doesn't understand English." hideButton={true} />
+          <InfoText text="She doesn't seem understand English." hideButton={true} />
         </AutoProceed>
 
         <InfoText
@@ -301,7 +305,7 @@ export const Story = () => {
             document.body.style.backgroundColor = '#333';
           }}
         >
-          <InfoText text="The Next Day -- 3PM" hideButton={true} />
+          <InfoText bold={true} text="The Next Day -- 3PM" hideButton={true} />
           <InfoText text="It's your single day off" hideButton={true} />
           <InfoText text="You've received a letter from your parents." hideButton={true} />
           <InfoText
@@ -369,7 +373,7 @@ export const Story = () => {
             document.body.style.backgroundColor = '#333';
           }}
         >
-          <InfoText text="A Few Days Later at The Factory -- Noon" hideButton={true} />
+          <InfoText bold={true} text="A Few Days Later at The Factory -- Noon" hideButton={true} />
           <InfoText text="Your boss stops by to have a word with you." hideButton={true} />
           <InfoText text="" hideButton={true}>
             <div css={tw`text-3xl text-red-500 italic font-mono`}>
