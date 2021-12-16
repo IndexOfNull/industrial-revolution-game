@@ -9,17 +9,29 @@ import { EndOfDay } from './EndOfDay';
 
 export const Story = () => {
   let [additionals, setAdditionals] = useState([]);
-  let [storyIndex, setStoryIndex] = useState(24);
-  const [money, setMoney] = useState(10);
+  let [storyIndex, setStoryIndex] = useState(1);
+  const [money, setMoney] = useState(0);
 
   const [wearingPin, setWearingPin] = useState(false);
   const [parentsMovedIn, setParentsMovedIn] = useState(false);
   const [childWorking, setChildWorking] = useState(false);
+  const [sentChildToWork, setSentChildToWork] = useState(false);
   const [saidHello, setSaidHello] = useState(false);
   const [goingToStrike, setGoingToStrike] = useState(false);
 
-  const childWorkingBonus = 0.5; //Extra money per day if child is working
-  const dailyMoney = 1.5;
+  const childWorkingBonus = 0.25; //Extra money per day if child is working
+  //const dailyMoney = 0.2 * (60 / 6); //20 cents with 60 hour work days and 6 days per week (roughly estimated based on 1911 Buffalo, N.Y. hourly rates https://fraser.stlouisfed.org/title/union-scale-wages-hours-labor-3912/union-scale-wages-hours-labor-1907-1912-476865?start_page=68)
+  const [dailyMoney, setDailyMoney] = useState(0.2 * (60 / 6));
+  //according to this, tenements costed roughly $10 a month (https://www.tenement.org/blog/the-rent-is-due-a-history-of-rent-at-97-orchard-street/)
+  //so that's roughly $120 a year, and if we assume two other families are defraying the cost, it's $40 a year
+  //the game happens over roughly a month, so we'll go with $3.33 (cost per month) / 7 ~= 0.5
+
+  //Gonna roughly base food prices based on this: https://www.newspapers.com/clip/2985627/food-prices-1911/
+  //Just going to imagine about how much food would be needed for a week and divide the total cost by 7
+  //We'll just call it about 60 cents per week or about 10 cents per day
+
+  //{ Food: 0.1, Heat: 0.1, Rent: 0.5 };
+  //These numbers look too easy, so I'm buffing them.
 
   const [musicSource, setMusicSource] = useState('');
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -31,10 +43,14 @@ export const Story = () => {
   const [daysWithoutRent, setDaysWithoutRent] = useState(0);
   const [daysWithoutHeat, setDaysWithoutHeat] = useState(0);
   const [childIsSick, setChildIsSick] = useState(false);
+
   const [childIsDead, setChildIsDead] = useState(false);
   const [childJustDied, setChildJustDied] = useState(false);
+  const [evicted, setEvicted] = useState(false);
+  const [starvedToDeath, setStarvedToDeath] = useState(false);
+  const [frozenToDeath, setFrozenToDeath] = useState(false);
 
-  const baseEndOfDayOptions: { [key: string]: number } = { Food: 1.5, Heat: 1.5, Rent: 3 };
+  const baseEndOfDayOptions: { [key: string]: number } = { Food: 0.25, Heat: 0.15, Rent: 1.3 };
   const [endOfDayOptions, setEndOfDayOptions] = useState(baseEndOfDayOptions);
   const [endOfDayTitleText, setEndOfDayTitleText] = useState('How will you spend your money?');
 
@@ -53,13 +69,13 @@ export const Story = () => {
   useEffect(() => {
     let options = Object.assign(baseEndOfDayOptions, {});
     if (childIsSick && !childIsDead) {
-      options.Medicine = 3;
+      options.Medicine = 1.5;
     } else if (childIsDead) {
-      options.Food = options.Food - 0.5;
+      options.Food = options.Food - 0.03;
     }
 
     if (parentsMovedIn) {
-      options.Food = options.Food + 1;
+      options.Food = options.Food + 0.07;
     }
     setEndOfDayOptions(options);
   }, [childIsSick, childIsDead, parentsMovedIn]);
@@ -67,11 +83,7 @@ export const Story = () => {
   useEffect(() => {
     let finalText = '';
 
-    if (childJustDied) {
-      finalText += 'Your child has died. ';
-    } else {
-      finalText += childIsSick ? 'Your child is sick. Medicine is available for purchase. ' : '';
-    }
+    finalText += childIsSick ? 'Your child is sick. Medicine is available for purchase. ' : '';
 
     if (daysWithoutFood >= 1) {
       finalText += 'Your family is hungry. ';
@@ -87,6 +99,10 @@ export const Story = () => {
 
     setEndOfDayTitleText(finalText + 'How will you spend your money?');
   }, [childJustDied, childIsSick, daysWithoutRent, daysWithoutFood, daysWithoutHeat]);
+
+  useEffect(() => {
+    if (childJustDied || evicted || starvedToDeath || frozenToDeath) setStoryIndex(0);
+  }, [childJustDied, evicted, starvedToDeath, frozenToDeath]);
 
   function chanceRoll(percentChance: number) {
     const random = Math.random() * 100;
@@ -144,13 +160,46 @@ export const Story = () => {
         setDaysWithoutMedicine(0);
       }
     }
+
+    if (daysWithoutFood > 1) {
+      //Starve after the second day without food
+      setStarvedToDeath(true);
+    } else if (daysWithoutHeat > 2) {
+      //Freeze on the third day without heat
+      setFrozenToDeath(true);
+    } else if (daysWithoutRent > 2) {
+      //Evict after three days of no rent
+      setEvicted(true);
+    }
   }
 
   return (
     <div css={tw`flex`}>
       <Switcher currentItem={storyIndex}>
         <AutoProceed
-          duration={1000}
+          duration={4000}
+          onStart={() => {
+            document.body.style.transitionDuration = '5s';
+            document.body.style.backgroundColor = '#001361';
+            audioObject.src = 'music/goodnight.mp3';
+            audioObject.loop = false;
+            audioObject.play();
+          }}
+        >
+          {childJustDied && <InfoText text="Your child died. You lose..." hideButton={true} />}
+          {starvedToDeath && (
+            <InfoText text="Your family starved to death. You lose..." hideButton={true} />
+          )}
+          {frozenToDeath && (
+            <InfoText text="Your family froze to death. You lose..." hideButton={true} />
+          )}
+          {evicted && (
+            <InfoText text="Your family has been evicted. You lose..." hideButton={true} />
+          )}
+        </AutoProceed>
+
+        <AutoProceed
+          duration={4000}
           onFinish={() => {
             incrementStory();
           }}
@@ -403,6 +452,7 @@ export const Story = () => {
             option2="No"
             onOption1={() => {
               setChildWorking(true);
+              setSentChildToWork(true);
               incrementStory();
             }}
             onOption2={() => {
@@ -581,8 +631,8 @@ export const Story = () => {
             document.body.style.backgroundColor = '#333';
           }}
           onFinish={() => {
-            incrementStory();
             makeDailyMoney();
+            incrementStory();
           }}
         >
           <InfoText text="Home sweet home." hideButton={true} />
@@ -752,6 +802,7 @@ export const Story = () => {
           duration={4000}
           onStart={() => {
             document.body.style.backgroundColor = '#333';
+            makeDailyMoney();
           }}
           onFinish={incrementStory}
         >
