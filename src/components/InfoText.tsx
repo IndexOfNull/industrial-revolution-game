@@ -25,11 +25,26 @@ export const InfoText = ({
 }: InfoTextProps) => {
   return (
     <div css={[tw`bg-black rounded-md p-5 px-10 flex flex-col`]}>
-      {text.length > 0 && <div css={[tw`text-3xl font-mono`, bold && tw`font-bold`, italic && tw`italic`, underline && tw`underline`]}>{text}</div>}
-      {children && <div css={[tw`flex justify-center items-center`, text.length > 0 && tw`mt-5`]}>{children}</div>}
+      {text.length > 0 && (
+        <div
+          css={[
+            tw`text-3xl font-mono`,
+            bold && tw`font-bold`,
+            italic && tw`italic`,
+            underline && tw`underline`,
+          ]}
+        >
+          {text}
+        </div>
+      )}
+      {children && (
+        <div css={[tw`flex justify-center items-center`, text.length > 0 && tw`mt-5`]}>
+          {children}
+        </div>
+      )}
       {!hideButton && (
         <button
-          css={tw`mt-5 font-serif hover:font-bold`}
+          css={tw`mt-5 text-lg font-serif hover:font-bold`}
           onClick={() => {
             next();
           }}

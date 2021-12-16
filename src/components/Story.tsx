@@ -266,7 +266,10 @@ export const Story = () => {
             <img css={tw`max-h-80`} src="img/factory.jpg" />
           </InfoText>
           <InfoText text="It's dirty." hideButton={true} />
-          <InfoText text={'You make $' + dailyMoney / 60 + ' an hour.'} hideButton={true} />
+          <InfoText
+            text={'You make $' + (dailyMoney / 60).toFixed(2) + ' an hour.'}
+            hideButton={true}
+          />
           <InfoText text="You sit down at your station." hideButton={true} />
           <InfoText
             text="There is a little girl to your left, and a young woman to your right."
@@ -771,7 +774,7 @@ export const Story = () => {
           <InfoText text="" hideButton={true}>
             <img css={tw`max-h-80`} src="img/votesforwomen.jpg"></img>
           </InfoText>
-          <InfoText text="It's a homemade suffragette pin..." hideButton={true} />
+          <InfoText text="It's a home-made suffragette pin..." hideButton={true} />
           <InfoText
             text="Women's suffrage is a heated topic. You might catch nasty looks."
             hideButton={true}

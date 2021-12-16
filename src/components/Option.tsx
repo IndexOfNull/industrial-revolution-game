@@ -32,7 +32,7 @@ export const Option = ({
       {text.length > 0 && <div css={tw`text-3xl mb-5 font-mono`}>{text}</div>}
       {option1 && (
         <button
-          css={tw`mr-3 font-serif hover:font-bold`}
+          css={tw`font-serif text-lg hover:font-bold`}
           onClick={() => {
             onOption1();
           }}
@@ -42,7 +42,7 @@ export const Option = ({
       )}
       {option2 && (
         <button
-          css={tw`mr-3 font-serif hover:font-bold`}
+          css={tw`font-serif text-lg hover:font-bold`}
           onClick={() => {
             onOption2();
           }}
@@ -52,7 +52,7 @@ export const Option = ({
       )}
       {option3 && (
         <button
-          css={tw`mr-3 font-serif hover:font-bold`}
+          css={tw`font-serif text-lg hover:font-bold`}
           onClick={() => {
             onOption3();
           }}
