@@ -14,6 +14,8 @@ This game was made for a US History final. The premise is that you're a worker i
   - Babel and babel-loader for transpilation and macros.
   - PostCSS, css-loader, and postcss-loader for compiling basic CSS.
 
+_Note: Some audio files have been excluded due to copyright. Feel free to place whatever audio you want (refer to the .gitignore for what was left out)._
+
 # Building
 
 ```

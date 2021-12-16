@@ -768,6 +768,181 @@ export const Story = () => {
           continueText="Next"
           moneyToSpend={money}
         />
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={5500}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={() => {
+            setDailyMoney(dailyMoney * 0.75);
+            incrementStory();
+          }}
+        >
+          <InfoText bold={true} text="The Next Day" hideButton={true} />
+
+          {wearingPin && [
+            <InfoText
+              key={1}
+              text={'Your boss stopped by your station' + (goingToStrike ? ' again' : '') + '.'}
+              hideButton={true}
+            />,
+            <InfoText
+              key={2}
+              text={'He tells you your wages have been garnished'}
+              hideButton={true}
+            />,
+          ]}
+
+          {wearingPin && goingToStrike && (
+            <InfoText text={'It seems like you like stirring the pot.'} hideButton={true} />
+          )}
+        </AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={5000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={() => {
+            makeDailyMoney();
+            incrementStory();
+          }}
+        >
+          <InfoText text="Home sweet home." hideButton={true} />
+          {goingToStrike || wearingPin ? (
+            <InfoText text="Your future seems uncertain." hideButton={true} />
+          ) : (
+            <InfoText text="Your life is growing increasingly boring." hideButton={true} />
+          )}
+          <InfoText text={`You made $${dailyMoney.toFixed(2)}...`} hideButton={true} />
+          <InfoText text="Your evening duties are calling you." hideButton={true} />
+        </AutoProceed>
+
+        <EndOfDay
+          onContinue={(newAmount, optionsSelected) => {
+            endOfDayHandler(newAmount, optionsSelected);
+          }}
+          options={endOfDayOptions}
+          text={endOfDayTitleText}
+          continueText="Next"
+          moneyToSpend={money}
+        />
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        {parentsMovedIn &&
+          goingToStrike &&
+          wearingPin &&
+          !sentChildToWork && [
+            <AutoProceed
+              key={1}
+              duration={4000}
+              onStart={() => {
+                document.body.style.backgroundColor = '#333';
+                audioObject.src = 'music/buildup.mp3';
+                audioObject.loop = true;
+                audioObject.play();
+              }}
+              onFinish={incrementStory}
+            >
+              <InfoText text="You helped your parents find a place to stay," hideButton={true} />
+              <InfoText text="You fought for your rights," hideButton={true} />
+              <InfoText
+                text="And even kept your child away from dangerous labor."
+                hideButton={true}
+              />
+              <InfoText text="You..." hideButton={true} />
+            </AutoProceed>,
+            <AutoProceed
+              key={2}
+              duration={4000}
+              onStart={() => {
+                document.body.style.backgroundColor = '#000';
+              }}
+              onFinish={incrementStory}
+            ></AutoProceed>,
+            <AutoProceed
+              key={3}
+              duration={4000}
+              onStart={() => {
+                document.body.style.backgroundColor = '#00a2ff';
+                audioObject.src = 'music/win.mp3';
+                audioObject.play();
+              }}
+            >
+              <InfoText text="Were on the right side of history." hideButton={true} />
+              <InfoText text="You win!" hideButton={true} />
+            </AutoProceed>,
+          ]}
+
+        {(parentsMovedIn || goingToStrike || wearingPin || !sentChildToWork) && [
+          <AutoProceed
+            key={1}
+            duration={4000}
+            onStart={() => {
+              document.body.style.backgroundColor = '#333';
+              audioObject.src = 'music/buildup.mp3';
+              audioObject.loop = false;
+              audioObject.play();
+            }}
+            onFinish={incrementStory}
+          >
+            {parentsMovedIn && (
+              <InfoText text="You helped your parents find a place to stay." hideButton={true} />
+            )}
+            {goingToStrike && (
+              <InfoText text="You fought for better working conditions." hideButton={true} />
+            )}
+            {wearingPin && <InfoText text="You fought for women's suffrage." hideButton={true} />}
+            {!sentChildToWork && (
+              <InfoText text="You kept your child away from dangerous labor." hideButton={true} />
+            )}
+            <InfoText text="You..." hideButton={true} />
+          </AutoProceed>,
+          <AutoProceed
+            key={2}
+            duration={4000}
+            onStart={() => {
+              document.body.style.backgroundColor = '#000';
+            }}
+            onFinish={incrementStory}
+          ></AutoProceed>,
+          <AutoProceed
+            key={3}
+            duration={4000}
+            onStart={() => {
+              document.body.style.backgroundColor = '#333';
+              audioObject.src = 'music/halflose.mp3';
+              audioObject.play();
+            }}
+          >
+            <InfoText text="Could have done a little better." hideButton={true} />
+            <InfoText text="Try again." hideButton={true} />
+          </AutoProceed>,
+        ]}
       </Switcher>
     </div>
   );
