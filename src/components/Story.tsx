@@ -9,7 +9,7 @@ import { EndOfDay } from './EndOfDay';
 
 export const Story = () => {
   let [additionals, setAdditionals] = useState([]);
-  let [storyIndex, setStoryIndex] = useState(18);
+  let [storyIndex, setStoryIndex] = useState(24);
   const [money, setMoney] = useState(10);
 
   const [wearingPin, setWearingPin] = useState(false);
@@ -19,6 +19,7 @@ export const Story = () => {
   const [goingToStrike, setGoingToStrike] = useState(false);
 
   const childWorkingBonus = 0.5; //Extra money per day if child is working
+  const dailyMoney = 1.5;
 
   const [musicSource, setMusicSource] = useState('');
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -39,6 +40,14 @@ export const Story = () => {
 
   function incrementStory() {
     setStoryIndex(storyIndex + 1);
+  }
+
+  function makeDailyMoney(amount = dailyMoney) {
+    let newAmount = money + amount;
+    if (childWorking) {
+      newAmount += childWorkingBonus;
+    }
+    setMoney(newAmount);
   }
 
   useEffect(() => {
@@ -204,10 +213,11 @@ export const Story = () => {
           </InfoText>
           <InfoText text="It's dirty." hideButton={true} />
           <Option
-            text="You sit down at your station. There is a child to your left, and a young girl to your right. She looks to be no older than nineteen."
+            text="You sit down at your station. There is a teenager to your left, and a young girl to your right. She looks to be no older than nineteen."
             option1="Say hello"
             option2="Do nothing"
             onOption1={() => {
+              setSaidHello(true);
               setStoryIndex(5);
             }}
             onOption2={() => {
@@ -250,7 +260,7 @@ export const Story = () => {
           text="You worked for 16 hours and made $1.50"
           continueText="Walk home"
           next={() => {
-            setMoney(money + 1.5);
+            makeDailyMoney();
             incrementStory();
           }}
         />
@@ -384,7 +394,11 @@ export const Story = () => {
             </div>
           </InfoText>
           <Option
-            text="Will you bring your child to work? It could be dangerous for him..."
+            text={
+              "Will you bring your child to work? He'll earn + $" +
+              childWorkingBonus +
+              ' per day, but it could be dangerous for him.'
+            }
             option1="Yes"
             option2="No"
             onOption1={() => {
@@ -421,7 +435,7 @@ export const Story = () => {
           text="You work for the rest of the day and make $1.50"
           continueText="Walk home"
           next={() => {
-            setMoney(money + 1.5);
+            makeDailyMoney();
             incrementStory();
           }}
         />
@@ -568,7 +582,7 @@ export const Story = () => {
           }}
           onFinish={() => {
             incrementStory();
-            setMoney(money + 1.5);
+            makeDailyMoney();
           }}
         >
           <InfoText text="Home sweet home." hideButton={true} />
@@ -604,7 +618,156 @@ export const Story = () => {
           onFinish={incrementStory}
         >
           <InfoText bold={true} text="The Next Day" hideButton={true} />
+
+          {goingToStrike
+            ? [
+                <InfoText
+                  key={1}
+                  text="Almost everybody is outside the factory."
+                  hideButton={true}
+                />,
+                <InfoText
+                  key={2}
+                  text="Your boss spots you; he has an incredulous look on his face."
+                  hideButton={true}
+                />,
+                <InfoText
+                  key={3}
+                  text="The strike lasted for the whole day..."
+                  hideButton={true}
+                />,
+              ]
+            : [
+                <InfoText key={1} text="There was a strike today." hideButton={true} />,
+                <InfoText key={2} text="So you spent the day at home." hideButton={true} />,
+              ]}
         </AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={incrementStory}
+        >
+          <InfoText text="You're unsure of what might happen tomorrow." hideButton={true} />
+          <InfoText text="Your evening duties are calling you." hideButton={true} />
+        </AutoProceed>
+
+        <EndOfDay
+          onContinue={(newAmount, optionsSelected) => {
+            endOfDayHandler(newAmount, optionsSelected);
+          }}
+          options={endOfDayOptions}
+          text={endOfDayTitleText}
+          continueText="Next"
+          moneyToSpend={money}
+        />
+
+        <AutoProceed
+          duration={4000}
+          onFinish={() => {
+            if (goingToStrike) {
+              setChildWorking(false);
+            }
+          }}
+        >
+          <InfoText bold={true} text="The Next Day" hideButton={true} />
+          {goingToStrike ? (
+            [
+              <InfoText key={1} text="Your boss stopped by at your station." hideButton={true} />,
+              <InfoText key={2} text="" hideButton={true}>
+                <div css={tw`text-3xl text-red-500 italic font-mono`}>
+                  "I saw you at the strike. Don't bring your kid here anymore, we don't need him."
+                </div>
+              </InfoText>,
+            ]
+          ) : (
+            <InfoText text="Most of your co-workers have been replaced" hideButton={true} />
+          )}
+          <InfoText text="You keep your head down and get to work." hideButton={true} />
+          <InfoText
+            text="The teenager neighboring your station slips you something..."
+            hideButton={true}
+          />
+          <InfoText text="" hideButton={true}>
+            <img src="img/votesforwomen.jpg"></img>
+          </InfoText>
+          <InfoText text="It's a homemade suffragette pin..." hideButton={true} />
+          <InfoText
+            text="Women's suffrage is a heated topic. You might catch nasty looks."
+            hideButton={true}
+          />
+          <Option
+            text="Will you wear the pin?"
+            option1="Wear the pin"
+            option2="Slide it back"
+            onOption1={() => {
+              setWearingPin(true);
+              incrementStory();
+            }}
+            onOption2={() => {
+              setStoryIndex(storyIndex + 2);
+            }}
+          />
+        </AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onFinish={() => {
+            setStoryIndex(storyIndex + 2);
+          }}
+        >
+          <InfoText italic={true} text="The girl flashes you a smile," hideButton={true} />
+          <InfoText
+            italic={true}
+            text="But she suddenly looks back down at her station."
+            hideButton={true}
+          />
+          <InfoText bold={true} text="It's your boss" hideButton={true} />
+          <InfoText bold={true} italic={true} text="He saw the pin." hideButton={true} />
+        </AutoProceed>
+
+        <AutoProceed duration={4000} onFinish={incrementStory}>
+          <InfoText italic={true} text="The teenager looks disappointed." hideButton={true} />
+        </AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#000';
+          }}
+          onFinish={incrementStory}
+        ></AutoProceed>
+
+        <AutoProceed
+          duration={4000}
+          onStart={() => {
+            document.body.style.backgroundColor = '#333';
+          }}
+          onFinish={incrementStory}
+        >
+          <InfoText text="Home sweet home." hideButton={true} />
+          <InfoText text="Your evening duties are calling you." hideButton={true} />
+        </AutoProceed>
+
+        <EndOfDay
+          onContinue={(newAmount, optionsSelected) => {
+            endOfDayHandler(newAmount, optionsSelected);
+          }}
+          options={endOfDayOptions}
+          text={endOfDayTitleText}
+          continueText="Next"
+          moneyToSpend={money}
+        />
       </Switcher>
     </div>
   );
