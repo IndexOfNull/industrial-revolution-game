@@ -177,7 +177,7 @@ export const Story = () => {
     <div css={tw`flex`}>
       <Switcher currentItem={storyIndex}>
         <AutoProceed
-          duration={4000}
+          duration={5000}
           onStart={() => {
             document.body.style.transitionDuration = '5s';
             document.body.style.backgroundColor = '#001361';
@@ -196,6 +196,13 @@ export const Story = () => {
           {evicted && (
             <InfoText text="Your family has been evicted. You lose..." hideButton={true} />
           )}
+          <InfoText
+            text="Try again?"
+            continueText="Go to start"
+            next={() => {
+              window.location.reload();
+            }}
+          />
         </AutoProceed>
 
         <AutoProceed
@@ -868,7 +875,7 @@ export const Story = () => {
           ]}
 
           {wearingPin && goingToStrike && (
-            <InfoText text={'It seems like you like stirring the pot.'} hideButton={true} />
+            <InfoText text={'It seems that you like stirring the pot.'} hideButton={true} />
           )}
         </AutoProceed>
 
@@ -928,7 +935,7 @@ export const Story = () => {
               onStart={() => {
                 document.body.style.backgroundColor = '#333';
                 audioObject.src = 'music/buildup.mp3';
-                audioObject.loop = true;
+                audioObject.loop = false;
                 audioObject.play();
               }}
               onFinish={incrementStory}
@@ -959,7 +966,13 @@ export const Story = () => {
               }}
             >
               <InfoText text="Were on the right side of history." hideButton={true} />
-              <InfoText text="You win!" hideButton={true} />
+              <InfoText
+                text="You win!"
+                continueText="Go to start"
+                next={() => {
+                  window.location.reload();
+                }}
+              />
             </AutoProceed>,
           ]}
 
@@ -1005,7 +1018,13 @@ export const Story = () => {
             }}
           >
             <InfoText text="Could have done a little better." hideButton={true} />
-            <InfoText text="Try again." hideButton={true} />
+            <InfoText
+              text="Try again."
+              continueText="Go to start"
+              next={() => {
+                window.location.reload();
+              }}
+            />
           </AutoProceed>,
         ]}
       </Switcher>

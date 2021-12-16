@@ -18,6 +18,14 @@ images.forEach((img) => {
   const imgObject = new Image();
   imgObject.src = 'img/' + img;
 });
+
+//Preload Audio
+const audio = ['buildup.mp3', 'goodnight.mp3', 'halflose.mp3', 'win.mp3'];
+audio.forEach((src) => {
+  const audioObject = new Audio();
+  audioObject.src = 'music/' + src;
+});
+
 //For some reason, the root mounted component cannot be a functional component, so a class is used instead.
 export class App extends React.Component {
   render() {
