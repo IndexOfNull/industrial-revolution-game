@@ -30,7 +30,7 @@ export const EndOfDay = ({
   return (
     <div css={[tw`bg-black rounded-md p-5 px-10 flex flex-col mb-5`]}>
       <div css={tw`text-3xl font-mono`}>{text}</div>
-      <div css={tw`text-3xl font-mono mb-2`}>You have ${moneyLeft}</div>
+      <div css={tw`text-3xl font-mono mb-2`}>You have ${moneyLeft.toFixed(2)}</div>
       {Object.keys(options).map((option) => {
         const optionCost = options[option];
         return (
@@ -40,7 +40,7 @@ export const EndOfDay = ({
               type="checkbox"
               onChange={(e) => {
                 if (e.target.checked) {
-                  if (moneyToSpend - optionCost < 0) {
+                  if (moneyLeft - optionCost < 0) {
                     e.preventDefault();
                     e.target.checked = false;
                     return;

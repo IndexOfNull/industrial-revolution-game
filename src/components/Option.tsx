@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 import { TextScroller } from './TextScroller';
 
 type OptionProps = {
-  text: string;
+  text?: string;
   option1?: string;
   option2?: string;
   option3?: string;
@@ -15,7 +15,7 @@ type OptionProps = {
 
 export const Option = ({
   active = true,
-  text,
+  text = '',
   option1,
   option2,
   option3,
@@ -29,7 +29,7 @@ export const Option = ({
 
   return (
     <div css={[tw`bg-black rounded-md p-5 px-10 flex flex-col mb-5`, !active && tw`opacity-10`]}>
-      <div css={tw`text-3xl mb-5 font-mono`}>{text}</div>
+      {text.length > 0 && <div css={tw`text-3xl mb-5 font-mono`}>{text}</div>}
       {option1 && (
         <button
           css={tw`mr-3 font-serif hover:font-bold`}
